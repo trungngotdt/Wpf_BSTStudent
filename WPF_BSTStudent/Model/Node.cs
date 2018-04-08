@@ -331,6 +331,10 @@ namespace WPF_BSTStudent.Model
         }
 
 
+        public T FindNode(T data)
+        {
+            return FindNode(new Node<T>(data)).data;
+        }
 
         /// <summary>
         /// Searches for an element that matches the conditions defined by the specified
@@ -412,6 +416,11 @@ namespace WPF_BSTStudent.Model
                     }
                 }
             }
+        }
+
+        public bool Contains(T data)
+        {
+            return Contains(new Node<T>(data));
         }
 
         /// <summary>

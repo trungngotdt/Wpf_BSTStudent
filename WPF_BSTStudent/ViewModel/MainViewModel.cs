@@ -25,43 +25,66 @@ namespace WPF_BSTStudent.ViewModel
     {
         private readonly IDataService _dataService;
 
-        
+
         private string name;
         private string avgMark;
         private string accumulationCredit;
-        private DateTime birthDay;
-
+        private DateTime birthDay=DateTime.Now;
         private string id;
+
+        private string nameUpdate;
+        private string avgMarkUpdate;
+        private string accumulationCreditUpdate;
+        private DateTime birthDayUpdate=DateTime.Now;
+
+        private string idUpdate;
+
+
+        private Node<Student> nodeRoot;
+        private int numbeFind;
+        private int numBeDelete;
+        private bool isTxbUpdateStudent = true;
+        private bool isToggle;
+        private bool isTxbUpdateName;
+        private bool isTxbUpdateAvgMark;
+        private bool isTxbUpdateAccumulationCredit;
+        private bool isDpkUpdateBirthDay;
+        private readonly int VerticalMarging = 100;
+        private readonly int HorizontalMarging = 50;
+        private double heightGridBST;
+        private double widthGridBST;
+
+        private ICommand btnAddNodeClickCommand;
+        private ICommand btnFindNodeClickCommand;
+        private ICommand btnDeleteNodeClickCommand;
+        private ICommand btnUpdateClickCommand;
+
+        public string IdUpdate { get => idUpdate; set => idUpdate = value; }
+        public string NameUpdate { get => nameUpdate; set => nameUpdate = value; }
+        public string AvgMarkUpdate { get => avgMarkUpdate; set => avgMarkUpdate = value; }
+        public string AccumulationCreditUpdate { get => accumulationCreditUpdate; set => accumulationCreditUpdate = value; }
+        public DateTime BirthDayUpdate { get => birthDayUpdate; set => birthDayUpdate = value; }
+
+        public string Id { get => id; set => id = value; }
         public string Name { get => name; set => name = value; }
         public string AvgMark { get => avgMark; set => avgMark = value; }
         public string AccumulationCredit { get => accumulationCredit; set => accumulationCredit = value; }
         public DateTime BirthDay { get => birthDay; set => birthDay = value; }
 
-        public string Id { get => id; set => id = value; }
-
-        private double widthGridBST;
-        
-        private int numbeFind;
-        private int numBeDelete;
-        private Node<Student> nodeRoot;
-        private bool isToggle;
-        private readonly int VerticalMarging = 100;
-        private readonly int HorizontalMarging = 50;
-        private double heightGridBST;
-
-        private ICommand btnAddNodeClickCommand;
-        //private ICommand bSTGridSizeChanged;
-        private ICommand btnFindNodeClickCommand;
-        private ICommand btnDeleteNodeClickCommand;
-        private ICommand btnUpdateClickCommand;
-        
         public int NumbeFind { get => numbeFind; set => numbeFind = value; }
         public int NumBeDelete { get => numBeDelete; set => numBeDelete = value; }
         public Node<Student> NodeRoot { get => nodeRoot; set => nodeRoot = value; }
         public double WidthGridBST { get => widthGridBST; set => widthGridBST = value; }
         public double HeightGridBST { get => heightGridBST; set => heightGridBST = value; }
 
+        public bool IsToggle { get => isToggle; set => isToggle = value; }
+        public bool IsTxbUpdateStudent { get => isTxbUpdateStudent; set => isTxbUpdateStudent = value; }
+        public bool IsTxbUpdateName { get => isTxbUpdateName; set => isTxbUpdateName = value; }
+        public bool IsTxbUpdateAvgMark { get => isTxbUpdateAvgMark; set => isTxbUpdateAvgMark = value; }
+        public bool IsDpkUpdateBirthDay { get => isDpkUpdateBirthDay; set => isDpkUpdateBirthDay = value; }
+        public bool IsTxbUpdateAccumulationCredit { get => isTxbUpdateAccumulationCredit; set => isTxbUpdateAccumulationCredit = value; }
 
+        #region Command
         public ICommand BtnAddNodeClickCommand
         {
             get
@@ -73,8 +96,8 @@ namespace WPF_BSTStudent.ViewModel
                         MessageBox.Show($"We can't add {Id.ToString()}");
                         return;
                     }
-                    Student student = new Student(int.Parse( Id), Name, BirthDay,float.Parse( AvgMark),int.Parse( AccumulationCredit));
-                    AddButtonGridAsync(p as Grid,student);
+                    Student student = new Student(int.Parse(Id), Name, BirthDay, float.Parse(AvgMark), int.Parse(AccumulationCredit));
+                    AddButtonGridAsync(p as Grid, student);
                 });
             }
         }
@@ -91,26 +114,26 @@ namespace WPF_BSTStudent.ViewModel
                         return;
                     }
                     */
-                    string propertyContent="";
-                    var propertyName= (p[1] as WrapPanel).Children.OfType<RadioButton>().Where(r => r.IsChecked == true&&r.Name.StartsWith("RdbFind")).FirstOrDefault()?.Name.Substring(7);
+                    string propertyContent = "";
+                    var propertyName = (p[1] as WrapPanel).Children.OfType<RadioButton>().Where(r => r.IsChecked == true && r.Name.StartsWith("RdbFind")).FirstOrDefault()?.Name.Substring(7);
                     if (propertyName == null)
                     {
                         MessageBox.Show("Test");
                         return;
                     }
                     propertyContent = (p[1] as WrapPanel).Children.OfType<TextBox>().Where(t => t.IsEnabled).FirstOrDefault().Text;
-                    
+
                     List<Student> students = NodeRoot.ToList().Where(pr => pr.GetType().GetProperty(propertyName).GetValue(pr, null).ToString().Equals(propertyContent)).ToList();
-                    if (students==null)
+                    if (students == null)
                     {
                         MessageBox.Show("Test");
                         return;
                     }
-                    for (int i = 0; i <students.Count; i++)
+                    for (int i = 0; i < students.Count; i++)
                     {
-                        FindNodeInGrid(new Node<Student>(students[i]), p[0]as Grid);
+                        FindNodeInGrid(new Node<Student>(students[i]), p[0] as Grid);
                     }
-                    
+
                 });
             }
         }
@@ -132,16 +155,62 @@ namespace WPF_BSTStudent.ViewModel
             }
         }
 
-        public bool IsToggle { get => isToggle; set => isToggle = value; }
-        public ICommand BtnUpdateClickCommand { get
+        public ICommand BtnUpdateClickCommand
+        {
+            get
             {
-                return btnUpdateClickCommand=new RelayCommand<Grid>((p)=> 
+                return btnUpdateClickCommand = new RelayCommand<Grid>(async (p) =>
                 {
-
+                    var studentUpdate = NodeRoot.FindNode(new Student(int.Parse(Id)));
+                    if (studentUpdate == null || IsToggle == true)//State :Find the student
+                    {
+                        var button = FindButtonInGrid(p, Id);
+                        studentUpdate.Name = NameUpdate;
+                        studentUpdate.BirthDay = BirthDayUpdate;
+                        studentUpdate.AvgMark = int.Parse(AvgMarkUpdate);
+                        studentUpdate.AccumulationCredit = int.Parse(AccumulationCreditUpdate);
+                        ChangeStateTxbUpdate(false);
+                        (await button).Item2.ToolTip = studentUpdate.ToString();
+                    }
+                    else//State :Update
+                    {
+                        NameUpdate = studentUpdate.Name;
+                        AvgMarkUpdate = studentUpdate.AvgMark.ToString();
+                        AccumulationCreditUpdate = studentUpdate.AccumulationCredit.ToString();
+                        BirthDayUpdate = studentUpdate.BirthDay;
+                        ChangeContentTxbUpdate();
+                        ChangeStateTxbUpdate(true);
+                    }
                 });
             }
         }
 
+        #endregion
+        public void ChangeContentTxbUpdate()
+        {
+            RaisePropertyChanged("IdUpdate");
+            RaisePropertyChanged("AvgMarkUpdate");
+            RaisePropertyChanged("NameUpdate");
+            RaisePropertyChanged("AccumulationCreditUpdate");
+            RaisePropertyChanged("BirthDayUpdate");
+        }
+
+
+        public void ChangeStateTxbUpdate(bool isenable)
+        {
+            IsToggle = !isenable;
+            IsTxbUpdateStudent = !isenable;
+            IsTxbUpdateName = isenable;
+            IsTxbUpdateAvgMark = isenable;
+            IsTxbUpdateAccumulationCredit = isenable;
+            IsDpkUpdateBirthDay = isenable;
+            RaisePropertyChanged("IsTxbUpdateStudent");
+            RaisePropertyChanged("IsTxbUpdateAvgMark");
+            RaisePropertyChanged("IsTxbUpdateName");
+            RaisePropertyChanged("IsTxbUpdateAccumulationCredit");
+            RaisePropertyChanged("IsDpkUpdateBirthDay");
+            RaisePropertyChanged("IsToggle");
+        }
 
         /// <summary>
         /// Initializes a new instance of the MainViewModel class.
@@ -224,7 +293,7 @@ namespace WPF_BSTStudent.ViewModel
         /// To calculate new position and button will be added to Grid
         /// </summary>
         /// <param name="p">this is a grid which will be add a button</param>
-        private async void AddButtonGridAsync(UIElement p,Student student)
+        private async void AddButtonGridAsync(UIElement p, Student student)
         {
             double x = 0;
             double y = 0;
@@ -282,7 +351,7 @@ namespace WPF_BSTStudent.ViewModel
             try
             {
                 var grid = gridPanel as Grid;
-                Button button = new Button() { Name = "Btn" + data.Id.ToString(), Content = data.Id.ToString(),ToolTip=data.ToString() };
+                Button button = new Button() { Name = "Btn" + data.Id.ToString(), Content = data.Id.ToString(), ToolTip = data.ToString() };
 
                 button.SetValue(Grid.HorizontalAlignmentProperty, HorizontalAlignment.Left);
                 button.SetValue(Grid.VerticalAlignmentProperty, VerticalAlignment.Top);
@@ -332,13 +401,9 @@ namespace WPF_BSTStudent.ViewModel
                     {
                         var X2 = p.X2;
                         var Y2 = p.Y2;
-                        var name = p.Name;//Type : Btn'firstnum'Btn'lastnum',Example :Btn1Btn2
-                                          //var firstn = name.IndexOf("n");
-                                          //var lastn = name.LastIndexOf("n");
-                                          //var firstb = name.LastIndexOf("B");
-                        var number1 = Regex.Split(name, "Btn")[1]; //name.Substring(firstn + 1, firstb - firstn - 1);//Get first number
-                                                                   //var numStr = name.Length - lastn - 1;
-                        var number2 = Regex.Split(name, "Btn")[2];//name.Substring(lastn + 1, numStr);//Get last number
+                        var name = p.Name;//Type : Btn'firstnum'Btn'lastnum',Example :Btn1Btn2                                         
+                        var number1 = Regex.Split(name, "Btn")[1]; //Get first number
+                        var number2 = Regex.Split(name, "Btn")[2];//Get last number
                         p.BeginAnimation(Line.X2Property, null);//Animation be removed
                         if (int.Parse(number2) > int.Parse(number1))//Right
                         {
@@ -358,7 +423,7 @@ namespace WPF_BSTStudent.ViewModel
             });
             await Task.WhenAll(listTask);
 
-          
+
 
         }
         /// <summary>
@@ -451,18 +516,13 @@ namespace WPF_BSTStudent.ViewModel
 
         private async void DeleteNodeInGridAsync(Grid grid, int nodeDelete)
         {
-            if (nodeDelete == null)
-            {
-                return;
-            }
-
             var tup = FindButtonInGrid(grid, nodeDelete);
             //Task.Factory.ContinueWhenAll(tup.Result.Item1.ToArray(), p => { });
             await tup.ContinueWith(p =>
             {
                 Application.Current.Dispatcher.Invoke(async () =>
                 {
-                    var nodeDe = NodeRoot.FindNode(new Node<Student>(new Student( nodeDelete)));
+                    var nodeDe = NodeRoot.FindNode(new Node<Student>(new Student(nodeDelete)));
                     if (nodeDe.Left != null && nodeDe.Right != null)
                     {
                         var nodeSucc = nodeDe.FindNode(new Node<Student>(new Student((int)nodeDe.Successor())));
@@ -494,7 +554,7 @@ namespace WPF_BSTStudent.ViewModel
                         await Task.Factory.ContinueWhenAll(new Task[] { task }, t =>
                         {
 
-                            if (NodeRoot.FindParent(new Node<Student>(new Student( nodeDelete))).Item1 == null && nodeDe.Right == null && nodeDe.Left == null)
+                            if (NodeRoot.FindParent(new Node<Student>(new Student(nodeDelete))).Item1 == null && nodeDe.Right == null && nodeDe.Left == null)
                             {
                                 NodeRoot = null;
                             }
@@ -560,9 +620,9 @@ namespace WPF_BSTStudent.ViewModel
         /// <param name="nodeDelete"></param>
         async void UpdateButtonAfterDeleteAsync(Grid grid, int nodeDelete)
         {
-            var nodeDel = NodeRoot.FindNode(new Node<Student>(new Student( nodeDelete)));
+            var nodeDel = NodeRoot.FindNode(new Node<Student>(new Student(nodeDelete)));
             //Delete button have one or none child
-            var nodePa = NodeRoot.FindParent(new Node<Student>( nodeDel.Data));//Parent of nodeDelete
+            var nodePa = NodeRoot.FindParent(new Node<Student>(nodeDel.Data));//Parent of nodeDelete
             if (nodePa.Item1 != null)
             {
                 var line = FindLineInGrid(grid, $"{"Btn" + nodePa.Item1.Data.Id.ToString() + "Btn" + nodeDel.Data.Id.ToString()}");
@@ -603,6 +663,7 @@ namespace WPF_BSTStudent.ViewModel
             {
                 return;
             }
+            Task taskDraw = null;
             if (nodeParent != null)
             {
                 var nameLine = $"{"Btn" + nodeParent.Data.Id.ToString() + "Btn" + node.Data.Id.ToString()}";
@@ -611,7 +672,7 @@ namespace WPF_BSTStudent.ViewModel
                 var remainingSpace = grid.ActualWidth / Math.Pow(2, ((nodeParent.Y + VerticalMarging) / VerticalMarging));
                 node.X = nodeParent.X + (isRight == true ? remainingSpace : -remainingSpace);
                 node.Y = nodeParent.Y + VerticalMarging;
-                DrawLine(grid, nodeParent.X, node.X, nodeParent.Y, node.Y, isRight, nameLine);
+                taskDraw= DrawLine(grid, nodeParent.X, node.X, nodeParent.Y, node.Y, isRight, nameLine);
             }
             else
             {
@@ -630,7 +691,7 @@ namespace WPF_BSTStudent.ViewModel
             {
                 Application.Current.Dispatcher.Invoke(() => { RelayoutButtonAfterDeleteAsync(grid, node, false, node.Left); });
             });
-            await Task.WhenAll(new Task[] { taskL, taskR });
+            await Task.WhenAll(new Task[] { taskL, taskR,taskDraw });
         }
 
         /// <summary>

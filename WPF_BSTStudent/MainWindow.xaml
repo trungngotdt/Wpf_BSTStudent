@@ -27,31 +27,33 @@
         </ResourceDictionary>
     </Window.Resources>
 
-
-
     <Grid x:Name="LayoutRoot" Background="Orange">
-
-
-
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="auto"/>
             <ColumnDefinition Width="5*"/>
         </Grid.ColumnDefinitions>
 
-
         <materialDesign:ColorZone VerticalAlignment="Stretch"
-            Mode="Dark">
+                                  Mode="Dark">
             <Grid x:Name="MenuGrid" Grid.Column="0" >
                 <materialDesign:ColorZone Mode="Accent">
-                    <Expander ExpandDirection="Right" 
-                               Grid.Column="0">
+                    <ScrollViewer Background="Ivory"
+                                  >
+                        
+                    <Expander x:Name="ExpMenu" ExpandDirection="Right" 
+                              Grid.Column="0">
                         <Expander.Header>
+                            <StackPanel Orientation="Horizontal" 
+                                        Height="{Binding ElementName=ExpMenu,Path=Height}">
+                                
                             <TextBlock Text="Menu"
+                                       VerticalAlignment="Center"
                                        RenderTransformOrigin=".5,.5">
                                 <TextBlock.LayoutTransform>
                                     <RotateTransform Angle="90" />
                                 </TextBlock.LayoutTransform>
                             </TextBlock>
+                            </StackPanel>
                         </Expander.Header>
                         <StackPanel Orientation="Vertical" >
                             <Expander Header="Add Node" Grid.Column="0">
@@ -218,10 +220,11 @@
                             <Expander Header="Update Node" Grid.Column="0">
                                 <StackPanel >
                                     <StackPanel Orientation="Horizontal">
-                                        <TextBox x:Name="TxbUpdateNode"
+                                        <TextBox x:Name="TxbUpdateStudent"
                                                  Width="125"
+                                                 IsEnabled="{Binding IsTxbUpdateStudent}"
                                                  Margin="30,20,0,10"
-                                                 Text="{Binding Id}"
+                                                 Text="{Binding IdUpdate}"
                                                  Style="{StaticResource MaterialDesignFloatingHintTextBox}"
                                                  materialDesign:HintAssist.Hint="ID"/>
                                         <ToggleButton x:Name="BtnUpdate" 
@@ -248,44 +251,51 @@
 
                                                 <TextBox x:Name="TxbUpdateName"                                                     
                                                          Width="125"
-                                                         Text="{Binding Name}"
+                                                         IsEnabled="{Binding IsTxbUpdateName}"
+                                                         Text="{Binding NameUpdate}"
                                                          Style="{StaticResource MaterialDesignFloatingHintTextBox}"
                                                          materialDesign:HintAssist.Hint="Name"
                                                          Margin="30,25,0,0"/>
-                                                <TextBox x:Name="TxbUpdateAvgMark"                                                     
+                                                <TextBox x:Name="TxbUpdateAvgMark"
+                                                         IsEnabled="{Binding IsTxbUpdateAvgMark}"
                                                          Width="125"
-                                                         Text="{Binding AvgMark}"
+                                                         Text="{Binding AvgMarkUpdate}"
                                                          Style="{StaticResource MaterialDesignFloatingHintTextBox}"
                                                          materialDesign:HintAssist.Hint="AvgMark"
                                                          Margin="20,10,0,0"/>
-                                                
+
                                             </StackPanel>
                                             <StackPanel Orientation="Horizontal">
-                                               
+
                                                 <TextBox x:Name="TxbUpdateAccumulationCredit"                                                     
                                                          Width="125"
-                                                         Text="{Binding AccumulationCredit}"
+                                                         IsEnabled="{Binding IsTxbUpdateAccumulationCredit}"
+                                                         Text="{Binding AccumulationCreditUpdate}"
                                                          Style="{StaticResource MaterialDesignFloatingHintTextBox}"
                                                          materialDesign:HintAssist.Hint="AccumulationCredit"
                                                          Margin="30,20,0,10"/>
                                                 <DatePicker Width="125"
+                                                            IsEnabled="{Binding IsDpkUpdateBirthDay}"
                                                             Margin="30,20,0,10"
                                                             x:Name="DpkUpdateBirthDay"
-                                                            SelectedDate="{Binding BirthDay}"
+                                                            SelectedDate="{Binding BirthDayUpdate}"
                                                             materialDesign:HintAssist.Hint="BirthDay"
                                                             Style="{StaticResource MaterialDesignFloatingHintDatePicker}" />
                                             </StackPanel>
-                                            
+
                                         </StackPanel>
                                     </StackPanel>
 
                                 </StackPanel>
                             </Expander>
-
-
+                            <Expander Header="Travesal">
+                                
+                            </Expander>
+                                
                         </StackPanel>
 
                     </Expander>
+                    </ScrollViewer>
                 </materialDesign:ColorZone>
 
 
