@@ -453,6 +453,122 @@ namespace WPF_BSTStudent.Model
             return false;
         }
 
+        #region Traversal
+
+        public List<string> NRL()
+        {
+            List<string> list = new List<string>();
+            NRL(this,list);
+            return list;
+        }
+
+        public void NRL(Node<T> node,List<string> list)
+        {
+            if (node == null)
+            {
+                return;
+            }
+            list.Add(node.Data.ToString());
+            NRL(node.Right,list);
+            NRL(node.Left, list);
+        }
+
+        public List<string> NLR()
+        {
+            List<string> list = new List<string>();
+
+            NLR(this, list);
+            return list;
+        }
+
+        public void NLR(Node<T> node,List<string> list)
+        {
+            if (node == null)
+            {
+                return;
+            }
+            list.Add(node.Data.ToString());
+            NLR(node.Left, list);
+            NLR(node.Right, list);
+        }
+
+        public void LRN(Node<T> node,List<string> list)
+        {
+            if (node == null)
+            {
+                return;
+            }
+            LRN(node.Left, list);
+            LRN(node.Right, list);
+            list.Add(node.Data.ToString());
+        }
+
+        public List<string> LRN()
+        {
+            List<string> list = new List<string>();
+            LRN(this, list);
+            return list;
+                
+        }
+
+        public void RLN(Node<T> node,List<string> list)
+        {
+            if (node == null)
+            {
+                return;
+            }
+            RLN(node.Right, list);
+            RLN(node.Left, list);
+            list.Add(node.Data.ToString());
+        }
+
+        public List<string> RLN()
+        {
+            List<string> list = new List<string>();
+            RLN(this, list);
+            return list;
+                
+        }
+
+        public void RNL(Node<T> node,List<string> list)
+        {
+            if (node == null)
+            {
+                return;
+            }
+            RNL(node.Right, list);
+            list.Add(node.Data.ToString());
+            RNL(node.Left, list);
+        }
+
+        public List<string> RNL()
+        {
+            List<string> list = new List<string>();
+
+            RNL(this, list);
+            return list;
+        }
+
+        public void LNR(Node<T> node,List<string> list)
+        {
+            if (node == null)
+            {
+                return;
+            }
+            LNR(node.Left, list);
+            list.Add(node.Data.ToString());
+            LNR(node.Right, list);
+        }
+
+        public List<string> LNR()
+        {
+            List<string> list = new List<string>();
+            LNR(this, list);
+            return list;
+        }
+
+        #endregion
+
         #region ToList
 
         private void ToList(Node<T> node, List<T> list)

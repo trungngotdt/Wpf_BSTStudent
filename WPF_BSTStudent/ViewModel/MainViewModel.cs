@@ -3,6 +3,7 @@ using GalaSoft.MvvmLight.Command;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
@@ -58,6 +59,7 @@ namespace WPF_BSTStudent.ViewModel
         private ICommand btnFindNodeClickCommand;
         private ICommand btnDeleteNodeClickCommand;
         private ICommand btnUpdateClickCommand;
+        private ICommand btnTraversal;
 
         public string IdUpdate { get => idUpdate; set => idUpdate = value; }
         public string NameUpdate { get => nameUpdate; set => nameUpdate = value; }
@@ -183,6 +185,29 @@ namespace WPF_BSTStudent.ViewModel
                     }
                 });
             }
+        }
+
+        public ICommand BtnTraversal
+        {
+            get
+            {
+                return btnTraversal=new RelayCommand<string>((p)=> 
+                {
+                    var returnList= NodeRoot.GetType().GetMethod(p,new Type[] { }).Invoke(NodeRoot,new object[] { });
+                    ShowMessBoxTraversal(returnList as List<string>,p);
+                });
+            }
+        }
+
+        void ShowMessBoxTraversal(List<string> list,string name)
+        {
+            StringBuilder builder = new StringBuilder();
+            for (int i = 0; i < list.Count; i++)
+            {
+                builder.Append(list[i]);
+                builder.Append("\n");
+            }
+            MessageBox.Show(builder.ToString(),$"Traversal {name}",MessageBoxButton.OK);
         }
 
         #endregion
