@@ -35,4 +35,11 @@ C:\Users\Admin\source\repos\WPF_BSTStudent\WPF_BSTStudent\obj\Debug\WPF_BSTStude
 C:\Users\Admin\source\repos\WPF_BSTStudent\WPF_BSTStudent\obj\Debug\WPF_BSTStudent.csproj.CopyComplete
 C:\Users\Admin\source\repos\WPF_BSTStudent\WPF_BSTStudent\obj\Debug\WPF_BSTStudent.exe
 C:\Users\Admin\source\repos\WPF_BSTStudent\WPF_BSTStudent\obj\Debug\WPF_BSTStudent.pdb
+C:\Users\Admin\source\repos\WPF_BSTStudent\WPF_BSTStudent\bin\Debug\LinqToExcel.dll
+C:\Users\Admin\source\repos\WPF_BSTStudent\WPF_BSTStudent\bin\Debug\Remotion.Data.Linq.dll
+C:\Users\Admin\source\repos\WPF_BSTStudent\WPF_BSTStudent\bin\Debug\Remotion.dll
+C:\Users\Admin\source\repos\WPF_BSTStudent\WPF_BSTStudent\bin\Debug\Remotion.Interfaces.dll
+C:\Users\Admin\source\repos\WPF_BSTStudent\WPF_BSTStudent\bin\Debug\LinqToExcel.xml
 C:\Users\Admin\source\repos\WPF_BSTStudent\WPF_BSTStudent\obj\Debug\WPF_BSTStudent.csprojResolveAssemblyReference.cache
+C:\Users\Admin\source\repos\WPF_BSTStudent\WPF_BSTStudent\bin\Debug\FizzWare.NBuilder.dll
+C:\Users\Admin\source\repos\WPF_BSTStudent\WPF_BSTStudent\bin\Debug\MaterialDesignColors.pdb
