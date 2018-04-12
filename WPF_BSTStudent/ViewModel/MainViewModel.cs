@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -29,22 +30,33 @@ namespace WPF_BSTStudent.ViewModel
     public class MainViewModel : ViewModelBase
     {
         private readonly IDataService _dataService;
-        
+
         private string name;
         private string avgMark;
         private string accumulationCredit;
-        private DateTime birthDay=DateTime.Now;
+        private DateTime birthDay = DateTime.Now;
         private string id;
 
         private string nameUpdate;
         private string avgMarkUpdate;
         private string accumulationCreditUpdate;
-        private DateTime birthDayUpdate=DateTime.Now;
+        private DateTime birthDayUpdate = DateTime.Now;
         private string idUpdate;
+
+        private string txbFindName;
+        private string txbFindAvgMark;
+        private string txbFindAccumulationCredit;
+        private DateTime dpkFindBirthDay = DateTime.Now;
+        private string txbFindId;
 
         private Node<Student> nodeRoot;
         private int numbeFind;
         private int numBeDelete;
+        private bool isRdbFindId;
+        private bool isRdbFindName;
+        private bool isRdbFindAvgMark;
+        private bool isRdbFindAccumulationCredit;
+        private bool isRdbFindBirthDay;
         private bool isRdbSuperLeft;
         private bool isRdbSuperRight;
         private bool isRdbNormal;
@@ -60,7 +72,7 @@ namespace WPF_BSTStudent.ViewModel
         private bool isTxbAvgMarkAdd;
         private bool isTxbAccumulationCreditAdd;
         private bool isDpkBirthDayAdd;
-        private bool isCkbAddArray=false;
+        private bool isCkbAddArray = false;
         private bool isCkbDeleteArray = false;
         private readonly int VerticalMarging = 100;
         private readonly int HorizontalMarging = 50;
@@ -73,6 +85,8 @@ namespace WPF_BSTStudent.ViewModel
         private ICommand btnUpdateClickCommand;
         private ICommand btnTraversal;
         private ICommand btnGenerateData;
+        private ICommand btnClear;
+        private ICommand expClearData;
 
         public string IdUpdate { get => idUpdate; set => idUpdate = value; }
         public string NameUpdate { get => nameUpdate; set => nameUpdate = value; }
@@ -99,18 +113,24 @@ namespace WPF_BSTStudent.ViewModel
         public bool IsTxbUpdateAvgMark { get => isTxbUpdateAvgMark; set => isTxbUpdateAvgMark = value; }
         public bool IsDpkUpdateBirthDay { get => isDpkUpdateBirthDay; set => isDpkUpdateBirthDay = value; }
         public bool IsTxbUpdateAccumulationCredit { get => isTxbUpdateAccumulationCredit; set => isTxbUpdateAccumulationCredit = value; }
-        public bool IsCkbAddArray { get
+        public bool IsCkbAddArray
+        {
+            get
             {
                 ChangeStateTxbAdd(isCkbAddArray);
                 return isCkbAddArray;
             }
-            set => isCkbAddArray = value; }
-        public bool IsCkbDeleteArray { get
+            set => isCkbAddArray = value;
+        }
+        public bool IsCkbDeleteArray
+        {
+            get
             {
                 ChangeStateTxbDelete(isCkbDeleteArray);
                 return isCkbDeleteArray;
             }
-            set => isCkbDeleteArray = value; }
+            set => isCkbDeleteArray = value;
+        }
         public bool IsTxbIdAdd { get => isTxbIdAdd; set => isTxbIdAdd = value; }
         public bool IsTxbNameAdd { get => isTxbNameAdd; set => isTxbNameAdd = value; }
         public bool IsTxbAvgMarkAdd { get => isTxbAvgMarkAdd; set => isTxbAvgMarkAdd = value; }
@@ -119,7 +139,18 @@ namespace WPF_BSTStudent.ViewModel
         public bool IsRdbSuperLeft { get => isRdbSuperLeft; set => isRdbSuperLeft = value; }
         public bool IsRdbSuperRight { get => isRdbSuperRight; set => isRdbSuperRight = value; }
         public bool IsRdbNormal { get => isRdbNormal; set => isRdbNormal = value; }
+        public bool IsRdbFindId { get => isRdbFindId; set => isRdbFindId = value; }
+        public bool IsRdbFindName { get => isRdbFindName; set => isRdbFindName = value; }
+        public bool IsRdbFindAvgMark { get => isRdbFindAvgMark; set => isRdbFindAvgMark = value; }
+        public bool IsRdbFindAccumulationCredit { get => isRdbFindAccumulationCredit; set => isRdbFindAccumulationCredit = value; }
+        public bool IsRdbFindBirthDay { get => isRdbFindBirthDay; set => isRdbFindBirthDay = value; }
+        public string TxbFindName { get => txbFindName; set => txbFindName = value; }
+        public string TxbFindAvgMark { get => txbFindAvgMark; set => txbFindAvgMark = value; }
+        public string TxbFindAccumulationCredit { get => txbFindAccumulationCredit; set => txbFindAccumulationCredit = value; }
+        public DateTime DpkFindBirthDay { get => dpkFindBirthDay; set => dpkFindBirthDay = value; }
+        public string TxbFindId { get => txbFindId; set => txbFindId = value; }
         #region Command
+
         public ICommand BtnAddNodeClickCommand
         {
             get
@@ -130,20 +161,21 @@ namespace WPF_BSTStudent.ViewModel
                     if (IsCkbAddArray)
                     {
                         StringBuilder builder = new StringBuilder();
-                        var list= GetDataFromExcel();
+                        var list = GetDataFromExcel();
                         for (int i = 0; i < list.Length; i++)
                         {
                             if ((p as Grid).Children.OfType<Button>().Where(pa => pa.Name.Equals($"Btn{list[i].Id.ToString()}")).ToList().Count != 0)
                             {
-                                builder.Append(list[i].ToString()+"\n");
+                                builder.Append(list[i].ToString() + "\n");
                                 continue;
                             }
-                            student = new Student(list[i].Id, list[i].Name,list[i].BirthDay,list[i].AvgMark,list[i].AccumulationCredit);
+                            student = new Student(list[i].Id, list[i].Name, list[i].BirthDay, list[i].AvgMark, list[i].AccumulationCredit);
                             await AddButtonGridAsync(p as Grid, student);
+                            await Task.Delay(1000);
                         }
-                        if (builder.Length!=0)
+                        if (builder.Length != 0)
                         {
-                            MessageBox.Show("We can't add : \n" + builder.ToString());  
+                            MessageBox.Show("We can't add : \n" + builder.ToString());
                         }
                         return;
                     }
@@ -164,12 +196,7 @@ namespace WPF_BSTStudent.ViewModel
             {
                 return btnFindNodeClickCommand = new RelayCommand<object[]>((p) =>
                 {
-                    /*if ((NumbeFind == null) || (p[0] as Grid).Children.OfType<Button>().Where(pa => pa.Name.Equals($"Btn{NumbeFind.ToString()}")).ToList().Count == 0)
-                    {
-                        MessageBox.Show($"We don't have {NumbeFind.ToString()}");
-                        return;
-                    }
-                    */
+                    
                     string propertyContent = "";
                     var propertyName = (p[1] as WrapPanel).Children.OfType<RadioButton>().Where(r => r.IsChecked == true && r.Name.StartsWith("RdbFind")).FirstOrDefault()?.Name.Substring(7);
                     if (propertyName == null)
@@ -200,13 +227,13 @@ namespace WPF_BSTStudent.ViewModel
             {
                 return btnDeleteNodeClickCommand = new RelayCommand<Grid>(async (p) =>
                 {
-                    
+
                     if (IsCkbDeleteArray)
                     {
                         var list = GetDataFromExcel();
                         for (int i = 0; i < list.Length; i++)
                         {
-                            await HelpCommandDeleteAsync(p,list[i].Id);
+                            await HelpCommandDeleteAsync(p, list[i].Id);
                         }
                         return;
                     }
@@ -224,9 +251,9 @@ namespace WPF_BSTStudent.ViewModel
             }
         }
 
-        private async Task HelpCommandDeleteAsync(Grid grid,int id)
+        private async Task HelpCommandDeleteAsync(Grid grid, int id)
         {
-            if ((id== null) || (grid as Grid).Children.OfType<Button>().Where(pa => pa.Name.Equals($"Btn{id.ToString()}")).ToList().Count == 0)
+            if ((id == null) || (grid as Grid).Children.OfType<Button>().Where(pa => pa.Name.Equals($"Btn{id.ToString()}")).ToList().Count == 0)
             {
                 MessageBox.Show($"We can't delete {id.ToString()}");
                 return;
@@ -269,11 +296,11 @@ namespace WPF_BSTStudent.ViewModel
         {
             get
             {
-                return btnTraversal=new RelayCommand<string>((p)=> 
-                {
-                    var returnList= NodeRoot.GetType().GetMethod(p,new Type[] { }).Invoke(NodeRoot,new object[] { });
-                    ShowMessBoxTraversal(returnList as List<string>,p);
-                });
+                return btnTraversal = new RelayCommand<string>((p) =>
+                  {
+                      var returnList = NodeRoot.GetType().GetMethod(p, new Type[] { }).Invoke(NodeRoot, new object[] { });
+                      ShowMessBoxTraversal(returnList as List<string>, p);
+                  });
             }
         }
 
@@ -282,31 +309,84 @@ namespace WPF_BSTStudent.ViewModel
             get
             {
 
-                return btnGenerateData=new RelayCommand<UIElement>(async (p)=> 
-                {
-                    StringBuilder builder = new StringBuilder();
-                    var list = GetData(5);
+                return btnGenerateData = new RelayCommand<UIElement>(async (p) =>
+                  {
+                      StringBuilder builder = new StringBuilder();
+                      List<Student> list = new List<Student>();
+                      if (IsRdbNormal)
+                      {
+                          list = GetData(5);
+                      }
+                      else if (isRdbSuperLeft)
+                      {
+                          list = GetRandomData<Student>(5);
+                          list.Reverse();
+                      }
+                      else if (IsRdbSuperRight)
+                      {
+                          list = GetRandomData<Student>(5);
+                      }
+                      else
+                      {
+                          MessageBox.Show("Don't");
+                          return;
+                      }
+                    //var list = GetData(5);
                     Student student;
-                    for (int i = 0; i <list.Count(); i++)
-                    {
-                        if ((p as Grid).Children.OfType<Button>().Where(pa => pa.Name.Equals($"Btn{list[i].Id.ToString()}")).ToList().Count != 0)
-                        {
-                            builder.Append(list[i].ToString() + "\n");
-                            continue;
-                        }
-                        student = new Student(list[i].Id, list[i].Name, list[i].BirthDay, list[i].AvgMark, list[i].AccumulationCredit);
-                        await AddButtonGridAsync(p as Grid, student);
-                    }
-                    if (builder.Length != 0)
-                    {
-                        MessageBox.Show("We can't add : \n" + builder.ToString());
-                    }
-                    return;
+                      for (int i = 0; i < list.Count(); i++)
+                      {
+                          if ((p as Grid).Children.OfType<Button>().Where(pa => pa.Name.Equals($"Btn{list[i].Id.ToString()}")).ToList().Count != 0)
+                          {
+                              builder.Append(list[i].ToString() + "\n");
+                              continue;
+                          }
+                          student = new Student(list[i].Id, list[i].Name, list[i].BirthDay, list[i].AvgMark, list[i].AccumulationCredit);
+                          await AddButtonGridAsync(p as Grid, student);
+                          await Task.Delay(1000);
+                      }
+                      if (builder.Length != 0)
+                      {
+                          MessageBox.Show("We can't add : \n" + builder.ToString());
+                      }
+                      return;
+                  });
+            }
+        }
+
+        public ICommand BtnClear
+        {
+            get
+            {
+                return btnClear=new RelayCommand<UIElement>((p)=> 
+                {
+                    (p as Grid).Children.Clear();
+                    GC.Collect();
+                    GC.WaitForPendingFinalizers();
+                    GC.Collect();
                 });
             }
         }
 
-        void ShowMessBoxTraversal(List<string> list,string name)
+        public ICommand ExpClearData
+        {
+            get
+            {
+                return expClearData=new RelayCommand<string>((p)=>
+                {
+                    this.GetType().GetMethod("ClearData" + p, BindingFlags.NonPublic|BindingFlags.Instance).Invoke(this,new object[] { });
+                });
+            }
+        }
+
+        
+
+
+
+
+        #endregion
+
+        #region Helper
+        void ShowMessBoxTraversal(List<string> list, string name)
         {
             StringBuilder builder = new StringBuilder();
             for (int i = 0; i < list.Count; i++)
@@ -314,9 +394,66 @@ namespace WPF_BSTStudent.ViewModel
                 builder.Append(list[i]);
                 builder.Append("\n");
             }
-            MessageBox.Show(builder.ToString(),$"Traversal {name}",MessageBoxButton.OK);
+            MessageBox.Show(builder.ToString(), $"Traversal {name}", MessageBoxButton.OK);
         }
-        #endregion
+
+        private void ClearDataExpAdd()
+        {
+            IsCkbAddArray = false;
+            RaisePropertyChanged("IsCkbAddArray");
+            Id = "";
+            Name = "";
+            AccumulationCredit = "";
+            AvgMark = "";
+            BirthDay = DateTime.Now;
+            ChangeContentTxbAdd();
+        }
+
+        private void ClearDataExpFind()
+        {
+            TxbFindId = "";
+            TxbFindAvgMark = "";
+            TxbFindName = "";
+            TxbFindAccumulationCredit = "";
+            DpkFindBirthDay = DateTime.Now;
+            ChangeContentTxbFind();
+            IsRdbFindAccumulationCredit = false;
+            IsRdbFindAvgMark = false;
+            IsRdbFindBirthDay = false;
+            IsRdbFindId = false;
+            IsRdbFindName = false;
+            ChangeStateRdbFind();
+        }
+
+        private void ClearDataExpDelete()
+        {
+            NumBeDelete = 0;
+            IsCkbDeleteArray = false;
+            RaisePropertyChanged("NumBeDelete");
+            RaisePropertyChanged("IsCkbDeleteArray");
+        }
+
+        private void ClearDataExpUpdate()
+        {
+            IdUpdate = "";
+            NameUpdate = "";
+            AccumulationCreditUpdate = "";
+            AvgMarkUpdate = "";
+            BirthDayUpdate = DateTime.Now;
+            ChangeContentTxbUpdate();
+            ChangeStateTxbUpdate(false);
+
+        }
+
+        private void ClearDataExpGenerateData()
+        {
+            IsRdbNormal = false;
+            IsRdbSuperLeft = false;
+            IsRdbSuperRight = false;
+            RaisePropertyChanged("IsRdbSuperRight");
+            RaisePropertyChanged("IsRdbSuperLeft");
+            RaisePropertyChanged("IsRdbNormal");
+        }
 
         private List<T> GetRandomData<T>(int size)
         {
@@ -331,7 +468,7 @@ namespace WPF_BSTStudent.ViewModel
             var list = GetRandomData<Student>(size);
             Parallel.ForEach(list, (item) =>
             {
-                item.Id = item.Id - random.Next(0, 500) / 2 + random.Next(0, 500) + random.Next(0,500) * 2;
+                item.Id = item.Id - random.Next(0, 500) / 2 + random.Next(0, 500) + random.Next(0, 500) * 2;
                 float mark = (random.Next(0, 10) / 1.0f) + 10.0f / (random.Next(0, 99) * 1.0f);
                 item.AvgMark = float.Parse(String.Format("{0:0.00}", mark));
             });
@@ -342,6 +479,33 @@ namespace WPF_BSTStudent.ViewModel
         {
             IsTxbDeleteNode = !isenable;
             RaisePropertyChanged("IsTxbDeleteNode");
+        }
+
+        private void ChangeStateRdbFind()
+        {
+            RaisePropertyChanged("IsRdbFindId");
+            RaisePropertyChanged("IsRdbFindAvgMark");
+            RaisePropertyChanged("IsRdbFindName");
+            RaisePropertyChanged("IsRdbFindAccumulationCredit");
+            RaisePropertyChanged("IsRdbFindBirthDay");
+        }
+
+        private void ChangeContentTxbAdd()
+        {
+            RaisePropertyChanged("Id");
+            RaisePropertyChanged("AvgMark");
+            RaisePropertyChanged("Name");
+            RaisePropertyChanged("AccumulationCredit");
+            RaisePropertyChanged("BirthDay");
+        }
+
+        private void ChangeContentTxbFind()
+        {
+            RaisePropertyChanged("TxbFindId");
+            RaisePropertyChanged("TxbFindAvgMark");
+            RaisePropertyChanged("TxbFindName");
+            RaisePropertyChanged("TxbFindAccumulationCredit");
+            RaisePropertyChanged("DpkFindBirthDay");
         }
 
         public void ChangeContentTxbUpdate()
@@ -386,7 +550,7 @@ namespace WPF_BSTStudent.ViewModel
         public Student[] GetDataFromExcel()
         {
             Student[] students;
-            var open=new OpenFileDialog() { Filter = "Excel Workbook[97-2003] | *.xls|Excel Workbook|*.xlsx", ValidateNames = true };
+            var open = new OpenFileDialog() { Filter = "Excel Workbook[97-2003] | *.xls|Excel Workbook|*.xlsx", ValidateNames = true };
             int i = 0;
             if (open.ShowDialog() == true)
             {
@@ -418,7 +582,7 @@ namespace WPF_BSTStudent.ViewModel
             }
             return null;
         }
-
+        #endregion
         /// <summary>
         /// Initializes a new instance of the MainViewModel class.
         /// </summary>
@@ -697,10 +861,10 @@ namespace WPF_BSTStudent.ViewModel
                 {
                     ellipse = new Ellipse()
                     {
-                        
+
                         HorizontalAlignment = HorizontalAlignment.Left,
-                        VerticalAlignment=VerticalAlignment.Top,
-                        Margin=new Thickness(point.X-5,point.Y-5,0,0),
+                        VerticalAlignment = VerticalAlignment.Top,
+                        Margin = new Thickness(point.X - 5, point.Y - 5, 0, 0),
                         Stroke = new SolidColorBrush(Colors.Black),
                         Width = 60,
                         Height = 60,
@@ -881,7 +1045,7 @@ namespace WPF_BSTStudent.ViewModel
                 var remainingSpace = grid.ActualWidth / Math.Pow(2, ((nodeParent.Y + VerticalMarging) / VerticalMarging));
                 node.X = nodeParent.X + (isRight == true ? remainingSpace : -remainingSpace);
                 node.Y = nodeParent.Y + VerticalMarging;
-                taskDraw= DrawLine(grid, nodeParent.X, node.X, nodeParent.Y, node.Y, isRight, nameLine);
+                taskDraw = DrawLine(grid, nodeParent.X, node.X, nodeParent.Y, node.Y, isRight, nameLine);
             }
             else
             {
@@ -900,11 +1064,11 @@ namespace WPF_BSTStudent.ViewModel
             {
                 Application.Current.Dispatcher.Invoke(() => { RelayoutButtonAfterDeleteAsync(grid, node, false, node.Left); });
             });
-            if (nodeParent!=null)
+            if (nodeParent != null)
             {
-                await Task.WhenAll(new Task[] { taskL, taskR,taskDraw });
+                await Task.WhenAll(new Task[] { taskL, taskR, taskDraw });
             }
-            await Task.WhenAll(new Task[] { taskL, taskR});
+            await Task.WhenAll(new Task[] { taskL, taskR });
         }
 
         /// <summary>

@@ -40,8 +40,9 @@
                     <ScrollViewer Background="Ivory"
                                   VerticalScrollBarVisibility="Auto">
 
-                        <Expander x:Name="ExpMenu" ExpandDirection="Right" 
-                              Grid.Column="0">
+                        <Expander x:Name="ExpMenu"
+                                  ExpandDirection="Right" 
+                                  Grid.Column="0">
                             <Expander.Header>
                                 <StackPanel Orientation="Horizontal" 
                                         Height="{Binding ElementName=ExpMenu,Path=Height}">
@@ -56,7 +57,15 @@
                                 </StackPanel>
                             </Expander.Header>
                             <StackPanel Orientation="Vertical" >
-                                <Expander Header="Add Node" Grid.Column="0">
+                                <Expander x:Name="ExpAdd"
+                                          Header="Add Node">
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="Collapsed">
+                                            <i:InvokeCommandAction Command="{Binding ExpClearData}"
+                                                                   CommandParameter="{Binding ElementName=ExpAdd,Path=Name}"/>
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+
                                     <StackPanel >
                                         <StackPanel Orientation="Horizontal">
                                             <Button x:Name="BtnAddNode"
@@ -121,13 +130,17 @@
 
                                     </StackPanel>
                                 </Expander>
-
                                 <Expander Header="Find Node" 
-                                      x:Name="ExpFindMenu">
+                                          x:Name="ExpFind">
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="Collapsed">
+                                            <i:InvokeCommandAction Command="{Binding ExpClearData}"
+                                                                   CommandParameter="{Binding ElementName=ExpFind,Path=Name}"/>
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
                                     <StackPanel>
                                         <Button x:Name="BtnFindNode"                                    
-                                            Command="{Binding BtnFindNodeClickCommand}"
-                                            >
+                                                Command="{Binding BtnFindNodeClickCommand}">
                                             <Button.CommandParameter>
                                                 <MultiBinding Converter="{StaticResource ConverMulti}">
                                                     <Binding ElementName="BSTGrid"/>
@@ -151,51 +164,61 @@
                                                    Width="320">
                                                 <TextBlock ></TextBlock>
 
-                                                <RadioButton x:Name="RdbFindId" Height="20"/>
+                                                <RadioButton x:Name="RdbFindId"
+                                                             Height="20"
+                                                             IsChecked="{Binding IsRdbFindId}"/>
                                                 <TextBlock Width="10"></TextBlock>
                                                 <TextBox x:Name="TxbFindId"
                                                          IsEnabled="{Binding ElementName=RdbFindId,Path=IsChecked}"
                                                          Width="{Binding ElementName=TxbNode,Path=Width}"
                                                          materialDesign:HintAssist.Hint="ID"
                                                          Style="{StaticResource MaterialDesignFloatingHintTextBox}"                                             
-                                                         Text="{Binding Id,Mode=OneWayToSource}"/>
+                                                         Text="{Binding TxbFindId}"/>
 
                                                 <TextBlock Width="10"/>
-                                                <RadioButton x:Name="RdbFindName" Height="20"/>
+                                                <RadioButton x:Name="RdbFindName" 
+                                                             Height="20"
+                                                             IsChecked="{Binding IsRdbFindName}"/>
                                                 <TextBlock Width="10"></TextBlock>
                                                 <TextBox x:Name="TxbFindName"
                                                          IsEnabled="{Binding ElementName=RdbFindName,Path=IsChecked}"
                                                          Width="{Binding ElementName=TxbNode,Path=Width}"
                                                          materialDesign:HintAssist.Hint="Name"
                                                          Style="{StaticResource MaterialDesignFloatingHintTextBox}"                                             
-                                                         Text="{Binding Name,Mode=OneWayToSource}"/>
+                                                         Text="{Binding TxbFindName}"/>
 
-                                                <RadioButton x:Name="RdbFindAvgMark" Height="20"/>
+                                                <RadioButton x:Name="RdbFindAvgMark"
+                                                             Height="20"
+                                                             IsChecked="{Binding IsRdbFindAvgMark}"/>
                                                 <TextBlock Width="10"></TextBlock>
                                                 <TextBox x:Name="TxbFindAvgMark"
                                                          IsEnabled="{Binding ElementName=RdbFindAvgMark,Path=IsChecked}"
                                                          Width="{Binding ElementName=TxbNode,Path=Width}"
                                                          materialDesign:HintAssist.Hint="AvgMark"
                                                          Style="{StaticResource MaterialDesignFloatingHintTextBox}"                                             
-                                                         Text="{Binding AvgMark,Mode=OneWayToSource}"/>
+                                                         Text="{Binding TxbFindAvgMark}"/>
 
                                                 <TextBlock Width="10"></TextBlock>
-                                                <RadioButton x:Name="RdbFindAccumulationCredit" Height="20"/>
+                                                <RadioButton x:Name="RdbFindAccumulationCredit"
+                                                             Height="20"
+                                                             IsChecked="{Binding IsRdbFindAccumulationCredit}"/>
                                                 <TextBlock Width="10"></TextBlock>
                                                 <TextBox x:Name="TxbFindAccumulationCredit"
                                                          IsEnabled="{Binding ElementName=RdbFindAccumulationCredit,Path=IsChecked}"
                                                          Width="{Binding ElementName=TxbNode,Path=Width}"
                                                          materialDesign:HintAssist.Hint="AccumulationCredit"
                                                          Style="{StaticResource MaterialDesignFloatingHintTextBox}"                                             
-                                                         Text="{Binding AccumulationCredit,Mode=OneWayToSource}"/>
+                                                         Text="{Binding TxbFindAccumulationCredit}"/>
                                                 <TextBlock Width="320"></TextBlock>
-                                                <RadioButton x:Name="RdbFindBirthDay" Height="20"/>
+                                                <RadioButton x:Name="RdbFindBirthDay"
+                                                             Height="20"
+                                                             IsChecked="{Binding IsRdbFindBirthDay}"/>
                                                 <TextBlock Width="10"></TextBlock>
                                                 <DatePicker Width="260"
                                                         IsEnabled="{Binding ElementName=RdbFindBirthDay,Path=IsChecked}"
                                                         Margin="0,10,0,0"
                                                         x:Name="DpkFindBirthDay"
-                                                        SelectedDate="{Binding BirthDay}"
+                                                        SelectedDate="{Binding DpkFindBirthDay}"
                                                         materialDesign:HintAssist.Hint="BirthDay"
                                                         Style="{StaticResource MaterialDesignFloatingHintDatePicker}" />
                                             </WrapPanel>
@@ -204,7 +227,14 @@
                                     </StackPanel>
 
                                 </Expander>
-                                <Expander Header="Delete Node">
+                                <Expander x:Name="ExpDelete"
+                                          Header="Delete Node">
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="Collapsed">
+                                            <i:InvokeCommandAction Command="{Binding ExpClearData}"
+                                                                   CommandParameter="{Binding ElementName=ExpDelete,Path=Name}"/>
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
                                     <StackPanel>
                                         <StackPanel Orientation="Horizontal">
 
@@ -239,7 +269,14 @@
 
                                     </StackPanel>
                                 </Expander>
-                                <Expander Header="Update Node" Grid.Column="0">
+                                <Expander x:Name="ExpUpdate"
+                                          Header="Update Node" >
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="Collapsed">
+                                            <i:InvokeCommandAction Command="{Binding ExpClearData}"
+                                                                   CommandParameter="{Binding ElementName=ExpUpdate,Path=Name}"/>
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
                                     <StackPanel >
                                         <StackPanel Orientation="Horizontal">
                                             <TextBox x:Name="TxbUpdateStudent"
@@ -308,7 +345,8 @@
 
                                     </StackPanel>
                                 </Expander>
-                                <Expander Header="Traversal">
+                                <Expander x:Name="ExpTraversal"
+                                          Header="Traversal">
                                     <!--LNR, LRN, NLR, RNL, NRL, RLN-->
                                     <WrapPanel Width="350">
 
@@ -346,7 +384,14 @@
 
                                     </WrapPanel>
                                 </Expander>
-                                <Expander Header="Generate Date">
+                                <Expander x:Name="ExpGenerateData"
+                                          Header="Generate Date">
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="Collapsed">
+                                            <i:InvokeCommandAction Command="{Binding ExpClearData}"
+                                                                   CommandParameter="{Binding ElementName=ExpGenerateData,Path=Name}"/>
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
                                     <StackPanel Orientation="Vertical">
                                         <Button x:Name="BtnGenerateData"
                                                 Content="Generate Data"
@@ -368,6 +413,18 @@
                                         </StackPanel>
                                     </StackPanel>
                                 </Expander>
+                                <Expander Header="Clear">
+                                    <StackPanel Orientation="Vertical">
+                                        <Button Visibility="Hidden"
+                                                IsEnabled="False"/>
+                                        <Button x:Name="BtnClear"
+                                                Command="{Binding BtnClear}"
+                                                CommandParameter="{Binding ElementName=BSTGrid}"
+                                                Content="Clear"/>
+                                        <Button Visibility="Hidden"
+                                                IsEnabled="False"/>
+                                    </StackPanel>
+                                </Expander>
                             </StackPanel>
 
                         </Expander>
@@ -375,8 +432,7 @@
                 </materialDesign:ColorZone>
             </Grid>
         </materialDesign:ColorZone>
-        <ScrollViewer Grid.Column="1"
-                      
+        <ScrollViewer Grid.Column="1"                      
                       HorizontalScrollBarVisibility="Auto"
                       VerticalScrollBarVisibility="Auto">
             <Grid x:Name="BSTGrid" 
