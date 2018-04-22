@@ -13,6 +13,7 @@ using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Ioc;
 using Microsoft.Practices.ServiceLocation;
 using WPF_BSTStudent.Model;
+using WPF_BSTStudent.MyUtilities;
 
 namespace WPF_BSTStudent.ViewModel
 {
@@ -29,14 +30,9 @@ namespace WPF_BSTStudent.ViewModel
         {
             ServiceLocator.SetLocatorProvider(() => SimpleIoc.Default);
 
-            if (ViewModelBase.IsInDesignModeStatic)
-            {
-                SimpleIoc.Default.Register<IDataService, Design.DesignDataService>();
-            }
-            else
-            {
-                SimpleIoc.Default.Register<IDataService, DataService>();
-            }
+            SimpleIoc.Default.Register<ITree<Student>,BSTTree<Student>>();
+            SimpleIoc.Default.Register<IUtilities, Utilities>();
+            SimpleIoc.Default.Register<IHelper, Helper>();
 
             SimpleIoc.Default.Register<MainViewModel>();
         }

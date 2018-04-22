@@ -8,12 +8,23 @@
      <Namespaces>
       <Namespace Name="WPF_BSTStudent.Model">
        <Types>
+        <Type Name="BSTTree`1" Kind="Class" Accessibility="Public" ExternallyVisible="True">
+         <Members>
+          <Member Name="#CompareTo(System.Object)" Kind="Method" Static="False" Accessibility="Public" ExternallyVisible="True">
+           <Messages>
+            <Message TypeName="RethrowToPreserveStackDetails" Category="Microsoft.Usage" CheckId="CA2200" Status="Active" Created="2018-04-22 13:06:38Z" FixCategory="NonBreaking">
+             <Issue Certainty="95" Level="Error" Path="C:\Users\Admin\source\repos\WPF_BSTStudent\WPF_BSTStudent\Model" File="BSTTree.cs" Line="648">'BSTTree&lt;T&gt;.CompareTo(object)' rethrows a caught exception and specifies it explicitly as an argument. Use 'throw' without an argument instead, in order to preserve the stack location where the exception was initially raised.</Issue>
+            </Message>
+           </Messages>
+          </Member>
+         </Members>
+        </Type>
         <Type Name="Node`1" Kind="Class" Accessibility="Public" ExternallyVisible="True">
          <Members>
           <Member Name="#CompareTo(System.Object)" Kind="Method" Static="False" Accessibility="Public" ExternallyVisible="True">
            <Messages>
-            <Message TypeName="RethrowToPreserveStackDetails" Category="Microsoft.Usage" CheckId="CA2200" Status="Active" Created="2018-04-12 15:54:54Z" FixCategory="NonBreaking">
-             <Issue Certainty="95" Level="Error" Path="C:\Users\Admin\source\repos\WPF_BSTStudent\WPF_BSTStudent\Model" File="Node.cs" Line="604">'Node&lt;T&gt;.CompareTo(object)' rethrows a caught exception and specifies it explicitly as an argument. Use 'throw' without an argument instead, in order to preserve the stack location where the exception was initially raised.</Issue>
+            <Message TypeName="RethrowToPreserveStackDetails" Category="Microsoft.Usage" CheckId="CA2200" Status="Active" Created="2018-04-22 13:06:38Z" FixCategory="NonBreaking">
+             <Issue Certainty="95" Level="Error" Path="C:\Users\Admin\source\repos\WPF_BSTStudent\WPF_BSTStudent\Model" File="Node.cs" Line="83">'Node&lt;T&gt;.CompareTo(object)' rethrows a caught exception and specifies it explicitly as an argument. Use 'throw' without an argument instead, in order to preserve the stack location where the exception was initially raised.</Issue>
             </Message>
            </Messages>
           </Member>
@@ -23,8 +34,23 @@
          <Members>
           <Member Name="#Equals(System.Object)" Kind="Method" Static="False" Accessibility="Public" ExternallyVisible="True">
            <Messages>
-            <Message TypeName="RethrowToPreserveStackDetails" Category="Microsoft.Usage" CheckId="CA2200" Status="Active" Created="2018-04-12 15:54:54Z" FixCategory="NonBreaking">
+            <Message TypeName="RethrowToPreserveStackDetails" Category="Microsoft.Usage" CheckId="CA2200" Status="Active" Created="2018-04-22 13:06:38Z" FixCategory="NonBreaking">
              <Issue Certainty="95" Level="Error" Path="C:\Users\Admin\source\repos\WPF_BSTStudent\WPF_BSTStudent\Model" File="Student.cs" Line="63">'Student.Equals(object)' rethrows a caught exception and specifies it explicitly as an argument. Use 'throw' without an argument instead, in order to preserve the stack location where the exception was initially raised.</Issue>
+            </Message>
+           </Messages>
+          </Member>
+         </Members>
+        </Type>
+       </Types>
+      </Namespace>
+      <Namespace Name="WPF_BSTStudent.ViewModel">
+       <Types>
+        <Type Name="MainViewModel" Kind="Class" Accessibility="Public" ExternallyVisible="True">
+         <Members>
+          <Member Name="#.ctor(WPF_BSTStudent.Model.ITree`1&lt;WPF_BSTStudent.Model.Student&gt;,WPF_BSTStudent.MyUtilities.IUtilities)" Kind="Method" Static="False" Accessibility="Public" ExternallyVisible="True">
+           <Messages>
+            <Message TypeName="DoNotCallOverridableMethodsInConstructors" Category="Microsoft.Usage" CheckId="CA2214" Status="Active" Created="2018-04-22 13:06:38Z" FixCategory="NonBreaking">
+             <Issue Certainty="95" Level="CriticalWarning" Path="C:\Users\Admin\source\repos\WPF_BSTStudent\WPF_BSTStudent\ViewModel" File="MainViewModel.cs" Line="41">'MainViewModel.MainViewModel(ITree&lt;Student&gt;, IUtilities)' contains a call chain that results in a call to a virtual method defined by the class. Review the following call stack for unintended consequences: &#xD;&#xA;&#xD;&#xA;MainViewModel..ctor(ITree&lt;Student&gt;, IUtilities)&#xD;&#xA;MainViewModel.set_HeightGridBST(Double):Void&#xD;&#xA;ObservableObject.RaisePropertyChanged(String):Void</Issue>
             </Message>
            </Messages>
           </Member>
@@ -38,6 +64,16 @@
   </Target>
  </Targets>
  <Rules>
+  <Rule TypeName="DoNotCallOverridableMethodsInConstructors" Category="Microsoft.Usage" CheckId="CA2214">
+   <Name>Do not call overridable methods in constructors</Name>
+   <Description>Virtual methods defined on the class should not be called from constructors. If a derived class has overridden the method, the derived class version will be called (before the derived class constructor is called).</Description>
+   <Resolution Name="Default">{0} contains a call chain that results in a call to a virtual method defined by the class. Review the following call stack for unintended consequences: {1}</Resolution>
+   <Owner />
+   <Url>http://msdn.microsoft.com/library/ms182331.aspx</Url>
+   <Email>[none]</Email>
+   <MessageLevel Certainty="95">CriticalWarning</MessageLevel>
+   <File Name="usagerules.dll" Version="15.0.0.0" />
+  </Rule>
   <Rule TypeName="RethrowToPreserveStackDetails" Category="Microsoft.Usage" CheckId="CA2200">
    <Name>Rethrow to preserve stack details</Name>
    <Description>Use the IL rethrow instruction to preserve original stack details when re-raising a caught exception.</Description>

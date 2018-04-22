@@ -96,12 +96,14 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Design\DesignDataService.cs" />
-    <Compile Include="Model\DataItem.cs" />
-    <Compile Include="Model\DataService.cs" />
-    <Compile Include="Model\IDataService.cs" />
+    <Compile Include="Model\ITree.cs" />
     <Compile Include="Model\Node.cs" />
     <Compile Include="Model\Student.cs" />
+    <Compile Include="Model\BSTTree.cs" />
+    <Compile Include="MyUtilities\Helper.cs" />
+    <Compile Include="MyUtilities\IHelper.cs" />
+    <Compile Include="MyUtilities\IUtilities.cs" />
+    <Compile Include="MyUtilities\Utilities.cs" />
     <Compile Include="ValueConverters\Multiparamater.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />
@@ -150,7 +152,9 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Design\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

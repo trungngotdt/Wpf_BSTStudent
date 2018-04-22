@@ -15,7 +15,7 @@
         Background="{DynamicResource MaterialDesignPaper}"
         FontFamily="{DynamicResource MaterialDesignFont}"
         xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity" 
-        Title="MVVM Light Application"
+        Title="BST Application"
         DataContext="{Binding Main, Source={StaticResource Locator}}">
     <Window.Resources>
 
@@ -263,7 +263,7 @@
                                                          Style="{StaticResource MaterialDesignFloatingHintTextBox}"
                                                          Width="{Binding ElementName=TxbNode,Path=Width}"
                                                          materialDesign:HintAssist.Hint="ID"
-                                                         Text="{Binding NumBeDelete}"/>
+                                                         Text="{Binding IdDelete}"/>
                                             </StackPanel>
                                         </StackPanel>
 
